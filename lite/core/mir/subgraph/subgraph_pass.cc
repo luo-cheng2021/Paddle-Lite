@@ -26,6 +26,21 @@ namespace paddle {
 namespace lite {
 namespace mir {
 
+void OVSubgraphPass::Apply(const std::unique_ptr<SSAGraph>& graph) {
+  std::set<std::string> supported_lists;
+#define USE_SUBGRAPH_BRIDGE(op_type, target) supported_lists.insert(#op_type);
+  supported_lists.insert("conv2d");
+#undef USE_SUBGRAPH_BRIDGE
+  auto teller = [&](Node* node) {
+    if (!node->IsStmt()) return false;
+    auto& stmt = node->AsStmt();
+    //return supported_lists.count(stmt.op_type()) != 0;
+    return (stmt.op_type() != "feed") && (stmt.op_type() != "fetch");
+  };
+  SubgraphFuser fuser(graph.get(), teller, 1 /* min_subgraph_size */);
+  fuser();
+}
+
 void NPUSubgraphPass::Apply(const std::unique_ptr<SSAGraph>& graph) {
   std::set<std::string> supported_lists;
 #define USE_SUBGRAPH_BRIDGE(op_type, target) supported_lists.insert(#op_type);
@@ -164,3 +179,6 @@ REGISTER_MIR_PASS(mlu_subgraph_pass, paddle::lite::mir::MLUSubgraphPass)
 REGISTER_MIR_PASS(imagination_nna_subgraph_pass,
                   paddle::lite::mir::ImaginationNNASubgraphPass)
     .BindTargets({TARGET(kImaginationNNA)});
+REGISTER_MIR_PASS(ov_subgraph_pass,
+                  paddle::lite::mir::OVSubgraphPass)
+    .BindTargets({TARGET(kOV)});

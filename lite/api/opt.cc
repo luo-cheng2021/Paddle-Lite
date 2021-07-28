@@ -125,6 +125,8 @@ std::vector<Place> ParserValidPlaces(bool enable_fp16) {
     } else if (target_repr == "x86") {
       valid_places.emplace_back(Place{TARGET(kX86), PRECISION(kFloat)});
       valid_places.emplace_back(Place{TARGET(kX86), PRECISION(kInt64)});
+    } else if (target_repr == "ov") {
+      valid_places.emplace_back(Place{TARGET(kOV), PRECISION(kFloat)});
     } else if (target_repr == "x86_opencl") {
       valid_places.emplace_back(
           Place{TARGET(kOpenCL), PRECISION(kFP16), DATALAYOUT(kImageDefault)});
@@ -239,6 +241,7 @@ void CollectModelMetaInfo(const std::string& output_dir,
 void PrintOpsInfo(std::set<std::string> valid_ops = {}) {
   std::vector<std::string> targets = {"kHost",
                                       "kX86",
+                                      "kOV",
                                       "kCUDA",
                                       "kARM",
                                       "kOpenCL",
