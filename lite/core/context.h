@@ -66,7 +66,6 @@ using RKNPUContext = Context<TargetType::kRKNPU>;
 using HuaweiAscendNPUContext = Context<TargetType::kHuaweiAscendNPU>;
 using ImaginationNNAContext = Context<TargetType::kImaginationNNA>;
 using IntelFPGAContext = Context<TargetType::kIntelFPGA>;
-using OVContext = Context<TargetType::kOV>;
 
 template <>
 class Context<TargetType::kHost> {
@@ -443,24 +442,6 @@ class Context<TargetType::kX86> {
 };
 #endif
 
-#if 0
-template <>
-class Context<TargetType::kOV> {
- public:
-  // NOTE: InitOnce should only be used by ContextScheduler
-  void InitOnce() {}
-
-  void CopySharedTo(OVContext* ctx) {}
-
-  std::string name() const { return "OVContext"; }
-
- private:
-  // overall information
-  //
-  // kernel information
-};
-#endif
-
 #ifdef LITE_WITH_OPENCL
 template <>
 class Context<TargetType::kOpenCL> {
@@ -612,13 +593,6 @@ class ContextScheduler {
         LOG(INFO) << "New Context for MLU";
       } break;
 #endif
-#ifdef LITE_WITH_OV1
-      case TARGET(kOV): {
-        kernel_contexts_[TargetType::kOV]
-            .As<OVContext>()
-            .CopySharedTo(&ctx->As<OVContext>());
-      } break;
-#endif
       default:
 #if (!defined LITE_ON_MODEL_OPTIMIZE_TOOL) && (!defined LITE_WITH_PYTHON)
         LOG(FATAL) << "unsupported target " << TargetToStr(target);
@@ -678,9 +652,6 @@ class ContextScheduler {
 #ifdef LITE_WITH_IMAGINATION_NNA
     InitContext<TargetType::kImaginationNNA, ImaginationNNAContext>();
 #endif
-#if 0
-    InitContext<TargetType::kOV, OVContext>();
-#endif  
 }
 
  private:

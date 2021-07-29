@@ -29,6 +29,7 @@ namespace mir {
 void OVSubgraphPass::Apply(const std::unique_ptr<SSAGraph>& graph) {
   std::set<std::string> supported_lists;
 #define USE_SUBGRAPH_BRIDGE(op_type, target) supported_lists.insert(#op_type);
+  // TODO: get the supported ops list luocheng
   supported_lists.insert("conv2d");
 #undef USE_SUBGRAPH_BRIDGE
   auto teller = [&](Node* node) {
@@ -181,4 +182,4 @@ REGISTER_MIR_PASS(imagination_nna_subgraph_pass,
     .BindTargets({TARGET(kImaginationNNA)});
 REGISTER_MIR_PASS(ov_subgraph_pass,
                   paddle::lite::mir::OVSubgraphPass)
-    .BindTargets({TARGET(kOV)});
+    .BindTargets({TARGET(kX86)});

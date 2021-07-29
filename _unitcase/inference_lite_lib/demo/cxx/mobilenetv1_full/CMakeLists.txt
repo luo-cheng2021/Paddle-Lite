@@ -28,7 +28,7 @@ include_directories(${LITE_DIR}/include/ ${MKLML_DIR}/include)
 
 # 3. compile options 
 if (NOT WIN32)
-  add_definitions(-std=c++11 -g -O3 -pthread)
+  add_definitions(-std=c++11 -g -pthread)
   set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
 endif()
 

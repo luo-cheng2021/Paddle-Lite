@@ -174,8 +174,7 @@ void RunModel(std::string model_dir,
     config.set_opencl_precision(CL_PRECISION_FP32);
   }
 #else
-  config.set_valid_places({Place{TARGET(kOV), PRECISION(kFloat)},
-                           Place{TARGET(kX86), PRECISION(kFloat)}
+  config.set_valid_places({Place{TARGET(kX86), PRECISION(kFloat)}
                            });
 #endif
 

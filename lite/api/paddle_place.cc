@@ -83,8 +83,7 @@ const std::string& TargetToStr(TargetType target) {
                                               "apu",
                                               "huawei_ascend_npu",
                                               "imagination_nna",
-                                              "intel_fpga",
-                                              "ov"};
+                                              "intel_fpga"};
   auto x = static_cast<int>(target);
   CHECK_LT(x, static_cast<int>(TARGET(NUM)));
   return target2string[x];
@@ -132,8 +131,7 @@ const std::string& TargetRepr(TargetType target) {
                                               "kAPU",
                                               "kHuaweiAscendNPU",
                                               "kImaginationNNA",
-                                              "kIntelFPGA",
-                                              "kOV"};
+                                              "kIntelFPGA"};
   auto x = static_cast<int>(target);
   CHECK_LT(x, static_cast<int>(TARGET(NUM)));
   return target2string[x];

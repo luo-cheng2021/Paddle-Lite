@@ -20,6 +20,7 @@
 #include "lite/core/kernel.h"
 #include "lite/core/subgraph_bridge_registry.h"
 #include "lite/core/subgraph_engine_base.h"
+#include <inference_engine.hpp>
 
 namespace paddle {
 namespace lite {
@@ -46,16 +47,15 @@ class SubgraphEngine : public subgraph::SubgraphEngineBase {
  protected:
   bool BuildDeviceProgram() override;
   bool LaunchDeviceProgram() override;
+  void Serialize();
+  void ConvertAndCreateIe();
 
-  std::vector<std::string> device_inames_;
-  std::vector<std::string> device_onames_;
-  //std::vector<imgdnn_input> device_itensors_;
-  //std::vector<imgdnn_output> device_otensors_;
-  //lite::imagination_nna::ImgdnnManager imgdnn_mgr_;
-  bool device_program_ready{false};
+  InferenceEngine::Core core_;
+  InferenceEngine::ExecutableNetwork executable_network_;
+  InferenceEngine::InferRequest infer_request_;
 };
 
-class SubgraphCompute : public KernelLite<TARGET(kOV),
+class SubgraphCompute : public KernelLite<TARGET(kX86),
                                           PRECISION(kFloat),
                                           DATALAYOUT(kNCHW)> {
  public:
