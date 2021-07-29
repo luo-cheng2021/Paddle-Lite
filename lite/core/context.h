@@ -652,7 +652,7 @@ class ContextScheduler {
 #ifdef LITE_WITH_IMAGINATION_NNA
     InitContext<TargetType::kImaginationNNA, ImaginationNNAContext>();
 #endif
-}
+  }
 
  private:
   std::map<TargetType, KernelContext> kernel_contexts_;
