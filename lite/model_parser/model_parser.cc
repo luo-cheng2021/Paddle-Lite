@@ -273,8 +273,7 @@ void SaveModelPb(const std::string &model_dir,
 
   std::string prog_path = model_dir + "/__model__";
   if (combined) {
-    // TODO: revert luocheng
-    prog_path = model_dir + "/model.pdmodel";
+    prog_path = model_dir + "/model";
   }
   std::ofstream model_ostream(prog_path, std::ios_base::binary);
   CHECK(model_ostream.is_open());
@@ -285,8 +284,7 @@ void SaveModelPb(const std::string &model_dir,
   // Save Params
   // NOTE: Only main block be used now.
   if (combined) {
-    // TODO: revert luocheng
-    const std::string combined_params_path = model_dir + "/model.pdiparams";
+    const std::string combined_params_path = model_dir + "/params";
     SaveCombinedParamsPb(combined_params_path, exec_scope, cpp_prog);
   } else {
     for (auto &item : pb_proto_prog.blocks(0).vars()) {

@@ -17,6 +17,7 @@
 #include <time.h>
 #include <limits>
 #include <utility>
+#include <fstream>
 #include "lite/core/op_registry.h"
 #include "lite/gen_code/gen_code.h"
 #include "lite/model_parser/model_parser.h"
@@ -63,7 +64,6 @@ void AddFetch(cpp::ProgramDesc& desc, int block_idx, Scope& scope, const std::st
 }
 
 #define MODEL_TMP_DIR "_ov_tmp"
-#define MODEL_TMP_PATH MODEL_TMP_DIR "/model.pdmodel"
 
 using namespace InferenceEngine;
 
@@ -96,7 +96,19 @@ void SubgraphEngine::ConvertAndCreateIe()
 {
   ngraph::frontend::FrontEndManager manager;
   auto fe = manager.load_by_framework("pdpd");
-  auto inputModel = fe->load_from_file(MODEL_TMP_PATH);
+  // The case when .pdmodel and .pdparams files are provided
+  std::ifstream model_stream(MODEL_TMP_DIR "/model", std::ios::in | std::ifstream::binary);
+  if (!(model_stream && model_stream.is_open()))
+  {
+    LOG(FATAL) << "[OpenVINO] Cannot open model file.";
+  }  
+  std::ifstream weights_stream(MODEL_TMP_DIR "/params", std::ios::in | std::ifstream::binary);
+  if (!(weights_stream && weights_stream.is_open()))
+  {
+    LOG(FATAL) << "[OpenVINO] Cannot open weights file.";
+  }
+  auto inputModel = fe->load_from_streams({&model_stream, &weights_stream});
+
   auto ngFunc = fe->convert(inputModel);
   CNNNetwork network(ngFunc);
   executable_network_ = core_.LoadNetwork(network, "CPU");
