@@ -1,4 +1,4 @@
-# how to compile and run paddle with openvino
+# how to compile and run paddle-lite with openvino
 
 ## Clone the code
 ```
@@ -26,3 +26,8 @@ export LD_LIBRARY_PATH=`pwd`/../../../third_party/mklml/lib:$LD_LIBRARY_PATH
 export OV_FRONTEND_PATH=$LD_LIBRARY_PATH
 ./mobilenet_full_api path/to/resnet_dir 1,3,224,224 1 1 1
 ```
+
+## Tips
+Remove "ov_subgraph_pass" in lite/core/optimizer.h:87  
+Eval `make -j 12` inside build.lite.x86/  
+Test `./mobilenet_full_api path/to/resnet_dir 1,3,224,224 1 1 1`  
